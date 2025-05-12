@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+	<title></title>
+	<meta name="generator" content="LibreOffice 24.8.4.2 (Linux)"/>
+	<meta name="created" content="00:00:00"/>
+	<meta name="changed" content="00:00:00"/>
+	<style type="text/css">
+		@page { size: 8.27in 11.69in; margin: 0.79in }
+		p { line-height: 115%; margin-bottom: 0.1in; background: transparent }
+		pre { font-family: "Liberation Mono", monospace; font-size: 10pt; background: transparent }
+	</style>
+</head>
+<body lang="en-US" link="#000080" vlink="#800000" dir="ltr"><pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;title&gt;Photo Frame Generator&lt;/title&gt;
+  &lt;style&gt;
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    canvas { border: 1px solid #ccc; margin-top: 20px; }
+    input { margin: 10px 0; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h2&gt;Upload Your Photo and Add Frame&lt;/h2&gt;
+  &lt;input type=&quot;file&quot; id=&quot;upload&quot; accept=&quot;image/*&quot; /&gt;
+  &lt;br /&gt;
+  &lt;canvas id=&quot;canvas&quot; width=&quot;500&quot; height=&quot;500&quot;&gt;&lt;/canvas&gt;
+  &lt;br /&gt;
+  &lt;button id=&quot;downloadBtn&quot;&gt;Download Framed Photo&lt;/button&gt;
+
+  &lt;script&gt;
+    const upload = document.getElementById('upload');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const frame = new Image();
+    frame.src = 'frame.png'; // Transparent PNG frame
+
+    upload.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+        const img = new Image();
+        img.onload = function() {
+          // Draw user image
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Draw frame on top
+          frame.onload = function() {
+            ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+          };
+
+          // If already loaded
+          if (frame.complete) {
+            ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
+          }
+        };
+        img.src = event.target.result;
+      };
+
+      if (file) reader.readAsDataURL(file);
+    });
+
+    document.getElementById('downloadBtn').addEventListener('click', () =&gt; {
+      const link = document.createElement('a');
+      link.download = 'framed-photo.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    });
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+</body>
+</html>
